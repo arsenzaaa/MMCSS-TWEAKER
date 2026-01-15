@@ -1,0 +1,102 @@
+﻿<Window x:Class="MMCSSTweaker.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:core="clr-namespace:MMCSSTweaker.Core"
+        xmlns:views="clr-namespace:MMCSSTweaker.Views"
+        mc:Ignorable="d"
+        Title="MMCSS TWEAKER"
+        Width="920"
+        Height="740"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize">
+        <Grid Background="{StaticResource WindowBackground}">
+            <Grid.RowDefinitions>
+            <RowDefinition Height="200"/>
+            <RowDefinition Height="1"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="{StaticResource ControlBackground}" Padding="22,16,22,16">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Grid x:Name="HeaderContent" Grid.Row="1" HorizontalAlignment="Center" Margin="0,12,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" HorizontalAlignment="Center">
+                    <TextBlock Text="MMCSS TWEAKER" FontSize="29" FontWeight="Bold" Foreground="{StaticResource NeonWhite}" TextAlignment="Center"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,4,0,0">
+                        <TextBlock FontSize="13" Foreground="{StaticResource MutedForeground}" Text="developed by"/>
+                        <TextBlock FontSize="13" Foreground="{StaticResource MutedForeground}" Margin="2,0,0,0">
+                            <Hyperlink
+                                NavigateUri="https://t.me/arsenzaa"
+                                RequestNavigate="TelegramLink_OnRequestNavigate">
+                                @arsenza
+                            </Hyperlink>
+                        </TextBlock>
+                    </StackPanel>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="1" HorizontalAlignment="Center" Width="760" Margin="0,10,0,0">
+                    <UniformGrid Columns="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Button Content="{Binding Source={x:Static core:LocalizationManager.Instance}, Path=[Button_Apply]}" Style="{StaticResource DarkButtonStyle}" Click="ApplyAllButton_OnClick" Margin="6,4"/>
+                        <Button
+                            x:Name="AutoOptimizeAllButton"
+                            Content="{Binding Source={x:Static core:LocalizationManager.Instance}, Path=[Button_AutoOptimize]}"
+                            Style="{StaticResource DarkButtonStyle}"
+                            Click="AutoOptimizeAllButton_OnClick"
+                            Margin="6,4"/>
+                        <Button
+                            Content="{Binding Source={x:Static core:LocalizationManager.Instance}, Path=[Button_RestoreBackup]}"
+                            Style="{StaticResource DarkButtonStyle}"
+                            Click="RestoreBackupButton_OnClick"
+                            Margin="6,4"/>
+                        <Button Content="{Binding Source={x:Static core:LocalizationManager.Instance}, Path=[Button_Refresh]}" Style="{StaticResource DarkButtonStyle}" Click="RefreshButton_OnClick" Margin="6,4"/>
+                    </UniformGrid>
+                    </StackPanel>
+                </Grid>
+
+                <Button
+                    Grid.RowSpan="3"
+                    Content="{Binding Source={x:Static core:LocalizationManager.Instance}, Path=ToggleLanguageLabel}"
+                    ToolTip="{Binding Source={x:Static core:LocalizationManager.Instance}, Path=ToggleLanguageTooltip}"
+                    Style="{StaticResource LanguageToggleButtonStyle}"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Margin="0,0,0,0"
+                    Click="LanguageToggle_OnClick"/>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="1" Background="{StaticResource BorderBrushDark}"/>
+
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" Background="{StaticResource WindowBackground}">
+            <StackPanel Margin="0,12,0,12" HorizontalAlignment="Center" Width="760">
+                <Border Style="{StaticResource CardBorderStyle}" Margin="0,0,0,12">
+                    <StackPanel>
+                        <Border Height="1" Background="{StaticResource BorderBrushDark}"/>
+                        <TextBlock Text="{Binding Source={x:Static core:LocalizationManager.Instance}, Path=[Section_SystemProfile]}" Style="{StaticResource SectionHeaderStyle}"/>
+                        <views:SystemProfileTab x:Name="SystemTab"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource CardBorderStyle}">
+                    <StackPanel>
+                        <Border Height="1" Background="{StaticResource BorderBrushDark}"/>
+                        <TextBlock Text="{Binding Source={x:Static core:LocalizationManager.Instance}, Path=[Section_AudioTasks]}" Style="{StaticResource SectionHeaderStyle}"/>
+                        <views:AudioTaskTab x:Name="AudioTab"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>
