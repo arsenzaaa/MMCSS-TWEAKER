@@ -78,7 +78,8 @@ public partial class SystemProfileTab : UserControl
 
             if (hasNetworkThrottling)
             {
-                NetworkThrottlingIndex.Value = (int)networkThrottling;
+                uint normalizedNetworkThrottling = networkThrottling == 0 ? 1u : networkThrottling;
+                NetworkThrottlingIndex.Value = (int)normalizedNetworkThrottling;
                 NetworkThrottlingIndex.IsUnset = false;
             }
             else

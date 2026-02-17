@@ -160,7 +160,7 @@
                         Grid.Column="1"
                         Width="140"
                         Minimum="10"
-                        Maximum="99"
+                        Maximum="100"
                         ToolTip="{Binding Source={x:Static core:LocalizationManager.Instance}, Path=[System_SystemResponsiveness_Help]}"/>
                 </Grid>
                 <TextBlock

@@ -115,7 +115,8 @@ public partial class AudioTaskTab : UserControl
         _currentPriority = hasPriority ? priority : 1;
         _currentBgPriority = hasBgPriority ? bgPriority : 1;
         _currentYieldedPriority = hasYieldedPriority ? yieldedPriority : 1;
-        _currentRwtpPriority = hasRwtpPriority ? rwtpPriority : 8;
+        uint normalizedRwtpPriority = NormalizeReceiveWorkerThreadPriority(rwtpPriority);
+        _currentRwtpPriority = hasRwtpPriority ? normalizedRwtpPriority : 8;
 
         Affinity.Text = hasAffinity ? affinity.ToString("X") : UiConstants.UnsetValue;
 
@@ -164,7 +165,7 @@ public partial class AudioTaskTab : UserControl
 
         if (hasRwtpPriority)
         {
-            ReceiveWorkerThreadPriority.Value = (int)rwtpPriority;
+            ReceiveWorkerThreadPriority.Value = (int)normalizedRwtpPriority;
             ReceiveWorkerThreadPriority.IsUnset = false;
         }
         else
@@ -224,7 +225,7 @@ public partial class AudioTaskTab : UserControl
                 yieldedPriority = (uint)PriorityWhenYielded.Value;
 
             if (!_hasNetAdapterCx && schedCat != "Low" && !ReceiveWorkerThreadPriority.IsUnset)
-                rwtpPriority = (uint)ReceiveWorkerThreadPriority.Value;
+                rwtpPriority = NormalizeReceiveWorkerThreadPriority((uint)ReceiveWorkerThreadPriority.Value);
         }
 
         bool success = true;
@@ -386,6 +387,13 @@ public partial class AudioTaskTab : UserControl
         if (value == 8 || (16 <= value && value <= 31))
             return value;
         return (int)_currentRwtpPriority;
+    }
+
+    private static uint NormalizeReceiveWorkerThreadPriority(uint value)
+    {
+        if (value == 8 || (value >= 16 && value <= 31))
+            return value;
+        return 8;
     }
 
     private void UpdateThreadStatus()

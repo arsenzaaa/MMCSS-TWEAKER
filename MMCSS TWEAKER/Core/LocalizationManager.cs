@@ -23,64 +23,64 @@ public sealed class LocalizationManager : INotifyPropertyChanged
 
         ["Group_GeneralSettings"] = ("General Settings", "General Settings"),
         ["System_MaxThreadsPerProcess_Help"] = (
-            "(8-128) Maximum number of MMCSS threads registered per process",
-            "(8-128) Максимальное количество зарегистрированных в MMCSS потоков с одного процесса"),
+            "(8-128) Maximum number of MMCSS threads registered per process (out-of-range values fall back to 32)",
+            "(8-128) Максимальное количество зарегистрированных в MMCSS потоков с одного процесса (значения вне диапазона сводятся к 32)"),
         ["System_MaxThreadsPerProcess_Desc"] = (
-            "(8-128) Maximum number of MMCSS threads registered per process",
-            "(8-128) Максимальное количество зарегистрированных в MMCSS потоков с одного процесса"),
+            "(8-128) Maximum number of MMCSS threads registered per process (out-of-range values fall back to 32)",
+            "(8-128) Максимальное количество зарегистрированных в MMCSS потоков с одного процесса (значения вне диапазона сводятся к 32)"),
         ["System_MaxThreadsTotal_Help"] = (
-            "(64-65535) Maximum number of MMCSS threads registered",
-            "(64-65535) Максимальное количество зарегистрированных в MMCSS потоков"),
+            "(64-65535) Maximum number of MMCSS threads registered (out-of-range values fall back to 256)",
+            "(64-65535) Максимальное количество зарегистрированных в MMCSS потоков (значения вне диапазона сводятся к 256)"),
         ["System_MaxThreadsTotal_Desc"] = (
-            "(64-65535) Maximum number of MMCSS threads registered",
-            "(64-65535) Максимальное количество зарегистрированных в MMCSS потоков"),
+            "(64-65535) Maximum number of MMCSS threads registered (out-of-range values fall back to 256)",
+            "(64-65535) Максимальное количество зарегистрированных в MMCSS потоков (значения вне диапазона сводятся к 256)"),
         ["System_NetworkUnlimited"] = ("Disabled (FFFFFFFF)", "Отключен (FFFFFFFF)"),
         ["System_NetworkThrottlingIndex_Help"] = (
-            "(1-70 or FFFFFFFF) Throttling mechanism that limits the number of packets per millisecond and enables the NDIS thread that offloads work from the DPC level (FFFFFFFF = mechanism disabled along with the NDIS thread)",
-            "(1-70 или FFFFFFFF) Механизм тротлинга, который ограничивает количество пакетов в\u00A0миллисекунду и\u00A0активирует поток NDIS, который забирает работу с\u00A0уровня DPC\n(FFFFFFFF = Механизм отключен вместе с потоком NDIS)"),
+            "(1-70 or FFFFFFFF) Throttling mechanism that limits packets per millisecond and enables the NDIS thread that offloads work from DPC (0 is treated as 1; FFFFFFFF disables the mechanism and the NDIS thread)",
+            "(1-70 или FFFFFFFF) Механизм тротлинга, который ограничивает количество пакетов в миллисекунду и активирует поток NDIS, который забирает работу с уровня DPC (0 трактуется как 1; FFFFFFFF отключает механизм и поток NDIS)"),
         ["System_NetworkThrottlingIndex_Desc"] = (
-            "(1-70 or FFFFFFFF) Throttling mechanism that limits the number of packets per millisecond and enables the NDIS thread that offloads work from the DPC level (FFFFFFFF = mechanism disabled along with the NDIS thread)",
-            "(1-70 или FFFFFFFF) Механизм тротлинга, который ограничивает количество пакетов в\u00A0миллисекунду и\u00A0активирует поток NDIS, который забирает работу с\u00A0уровня DPC\n(FFFFFFFF = Механизм отключен вместе с потоком NDIS)"),
+            "(1-70 or FFFFFFFF) Throttling mechanism that limits packets per millisecond and enables the NDIS thread that offloads work from DPC (0 is treated as 1; FFFFFFFF disables the mechanism and the NDIS thread)",
+            "(1-70 или FFFFFFFF) Механизм тротлинга, который ограничивает количество пакетов в миллисекунду и активирует поток NDIS, который забирает работу с уровня DPC (0 трактуется как 1; FFFFFFFF отключает механизм и поток NDIS)"),
         ["Reason_NetworkThrottling_Unlimited"] = (
             "FFFFFFFF disables the throttling mechanism and the NDIS thread",
             "FFFFFFFF отключает механизм троттлинга и поток NDIS"),
         ["System_SchedulerTimerResolution_Help"] = (
-            "(1-10000) MMCSS timer resolution in 100-ns units",
-            "(1-10000) Timer resolution MMCSS в 100-ns единицах"),
+            "(1-10000) MMCSS timer resolution in 100-ns units (values above 10000 are clamped to 10000)",
+            "(1-10000) Timer resolution MMCSS в 100-ns единицах (значения выше 10000 принудительно становятся 10000)"),
         ["System_SchedulerTimerResolution_Desc"] = (
-            "(1-10000) MMCSS timer resolution in 100-ns units",
-            "(1-10000) Timer resolution MMCSS в 100-ns единицах"),
+            "(1-10000) MMCSS timer resolution in 100-ns units (values above 10000 are clamped to 10000)",
+            "(1-10000) Timer resolution MMCSS в 100-ns единицах (значения выше 10000 принудительно становятся 10000)"),
         ["System_NoLazyMode_Help"] = (
-            "Enables/disables Lazy Mode. Side effect when set to 1: the audiodg audio thread sometimes gets priority 7 (and the application's audio thread gets priority 8) if Scheduling Category is not set to Low",
-            "Включает/Отключает Lazy Mode. Побочный эффект при\u00A0значении 1: Аудио поток audiodg иногда получает приоритет 7 (аудио поток приложения получает приоритет 8) если Scheduling Category не стоит на\u00A0Low"),
+            "NoLazyMode: 0 = Lazy Mode enabled, 1 = Lazy Mode disabled. Side effect with value 1: the audiodg audio thread sometimes gets priority 7 (and the application's audio thread gets priority 8) if Scheduling Category is not set to Low",
+            "NoLazyMode: 0 = Lazy Mode включен, 1 = Lazy Mode отключен. Побочный эффект при значении 1: аудио поток audiodg иногда получает приоритет 7 (аудио поток приложения получает приоритет 8), если Scheduling Category не стоит на Low"),
         ["System_NoLazyMode_Desc"] = (
-            "Enables/disables Lazy Mode. Side effect when set to 1: the audiodg audio thread sometimes gets priority 7 (and the application's audio thread gets priority 8) if Scheduling Category is not set to Low",
-            "Включает/Отключает Lazy Mode. Побочный эффект при\u00A0значении 1: Аудио поток audiodg иногда получает приоритет 7 (аудио поток приложения получает приоритет 8) если Scheduling Category не стоит на\u00A0Low"),
+            "NoLazyMode: 0 = Lazy Mode enabled, 1 = Lazy Mode disabled. Side effect with value 1: the audiodg audio thread sometimes gets priority 7 (and the application's audio thread gets priority 8) if Scheduling Category is not set to Low",
+            "NoLazyMode: 0 = Lazy Mode включен, 1 = Lazy Mode отключен. Побочный эффект при значении 1: аудио поток audiodg иногда получает приоритет 7 (аудио поток приложения получает приоритет 8), если Scheduling Category не стоит на Low"),
         ["System_SchedulerPeriod_Help"] = (
-            "(50000-1000000) SchedulerPeriod (100 ns) is the MMCSS scheduler base period. The percentage is defined by SystemResponsiveness: that portion goes to SleepResponsiveness (sleep event), the rest to Realtime (sleep event). Also defines the interval between IdleDetection events.",
-            "(50000-1000000) SchedulerPeriod (100 нс) — базовый период планировщика MMCSS. Процент задается параметром SystemResponsiveness: эта доля уходит на SleepResponsiveness (событие сна), остальная часть — Realtime (событие сна). Также определяет интервал между событиями IdleDetection."),
+            "(50000-1000000) SchedulerPeriod (100 ns) is the MMCSS scheduler base period. The percentage is defined by SystemResponsiveness: that portion goes to SleepResponsiveness (sleep event), the rest to Realtime (sleep event). Also defines the interval between IdleDetection events (out-of-range values fall back to 100000).",
+            "(50000-1000000) SchedulerPeriod (100 нс) — базовый период планировщика MMCSS. Процент задается параметром SystemResponsiveness: эта доля уходит на SleepResponsiveness (событие сна), остальная часть — Realtime (событие сна). Также определяет интервал между событиями IdleDetection (значения вне диапазона сводятся к 100000)."),
         ["System_SchedulerPeriod_Desc"] = (
-            "(50000-1000000) SchedulerPeriod (100 ns) is the MMCSS scheduler base period. The percentage is defined by SystemResponsiveness: that portion goes to SleepResponsiveness (sleep event), the rest to Realtime (sleep event). Also defines the interval between IdleDetection events.",
-            "(50000-1000000) SchedulerPeriod (100 нс) — базовый период планировщика MMCSS. Процент задается параметром SystemResponsiveness: эта доля уходит на SleepResponsiveness (событие сна), остальная часть — Realtime (событие сна). Также определяет интервал между событиями IdleDetection."),
+            "(50000-1000000) SchedulerPeriod (100 ns) is the MMCSS scheduler base period. The percentage is defined by SystemResponsiveness: that portion goes to SleepResponsiveness (sleep event), the rest to Realtime (sleep event). Also defines the interval between IdleDetection events (out-of-range values fall back to 100000).",
+            "(50000-1000000) SchedulerPeriod (100 нс) — базовый период планировщика MMCSS. Процент задается параметром SystemResponsiveness: эта доля уходит на SleepResponsiveness (событие сна), остальная часть — Realtime (событие сна). Также определяет интервал между событиями IdleDetection (значения вне диапазона сводятся к 100000)."),
         ["System_SystemResponsiveness_Help"] = (
-            "(10-99, rounded down) Percentage of SchedulerPeriod that goes to SleepResponsiveness. Values above 50 prevent audio threads from registering in MMCSS (their priority is locked to 15)",
-            "(10-99, но округляется в\u00A0меньшую сторону) Обозначает процент от\u00A0SchedulerPeriod, который уходит в\u00A0SleepResponsiveness. Значения выше 50 не дают аудио потокам зарегистироваться в\u00A0MMCSS\n(Их приоритет локается на\u00A015)"),
+            "(10-100, rounded down to tens) Percentage of SchedulerPeriod that goes to SleepResponsiveness. Value 100 disables MMCSS. Values above 50 prevent audio threads from staying registered in MMCSS (their priority is locked to 15)",
+            "(10-100, округляется в меньшую сторону до десятков) Процент от SchedulerPeriod, который уходит в SleepResponsiveness. Значение 100 отключает MMCSS. Значения выше 50 не дают аудио потокам удерживать регистрацию в MMCSS (их приоритет фиксируется на 15)"),
         ["System_SystemResponsiveness_Desc"] = (
-            "(10-99, rounded down) Percentage of SchedulerPeriod that goes to SleepResponsiveness. Values above 50 prevent audio threads from registering in MMCSS (their priority is locked to 15)",
-            "(10-99, но округляется в\u00A0меньшую сторону) Обозначает процент от\u00A0SchedulerPeriod, который уходит в\u00A0SleepResponsiveness. Значения выше 50 не дают аудио потокам зарегистироваться в\u00A0MMCSS\n(Их приоритет локается на\u00A015)"),
+            "(10-100, rounded down to tens) Percentage of SchedulerPeriod that goes to SleepResponsiveness. Value 100 disables MMCSS. Values above 50 prevent audio threads from staying registered in MMCSS (their priority is locked to 15)",
+            "(10-100, округляется в меньшую сторону до десятков) Процент от SchedulerPeriod, который уходит в SleepResponsiveness. Значение 100 отключает MMCSS. Значения выше 50 не дают аудио потокам удерживать регистрацию в MMCSS (их приоритет фиксируется на 15)"),
         ["Group_LazyModeSettings"] = ("Lazy Mode Settings", "Lazy Mode Settings"),
         ["System_IdleDetectionCycles_Help"] = (
-            "(1-31) Number of IdleDetection events that must pass to enter Lazy Mode / use IdleDetectionLazy events",
-            "(1-31) Количество событий IdleDetection, которое должно пройти для входа в Lazy Mode/Использования собьтий IdleDetectionLazy"),
+            "(1-31) Number of IdleDetection events that must pass to enter Lazy Mode / use IdleDetectionLazy events (out-of-range values fall back to 2)",
+            "(1-31) Количество событий IdleDetection, которое должно пройти для входа в Lazy Mode / использования событий IdleDetectionLazy (значения вне диапазона сводятся к 2)"),
         ["System_IdleDetectionCycles_Desc"] = (
-            "(1-31) Number of IdleDetection events that must pass to enter Lazy Mode / use IdleDetectionLazy events",
-            "(1-31) Количество событий IdleDetection, которое должно пройти для входа в Lazy Mode/Использования собьтий IdleDetectionLazy"),
+            "(1-31) Number of IdleDetection events that must pass to enter Lazy Mode / use IdleDetectionLazy events (out-of-range values fall back to 2)",
+            "(1-31) Количество событий IdleDetection, которое должно пройти для входа в Lazy Mode / использования событий IdleDetectionLazy (значения вне диапазона сводятся к 2)"),
         ["System_LazyModeTimeout_Help"] = (
-            "(0-FFFFFFFF) Interval between IdleDetectionLazy events",
-            "(0-FFFFFFFF) Интервал между событиями IdleDetectionLazy"),
+            "(0-FFFFFFFF, 100 ns units) Interval between IdleDetectionLazy events (if DWORD is missing, default is 1000000)",
+            "(0-FFFFFFFF, 100 нс единицы) Интервал между событиями IdleDetectionLazy (если DWORD отсутствует, значение по умолчанию 1000000)"),
         ["System_LazyModeTimeout_Desc"] = (
-            "(0-FFFFFFFF) Interval between IdleDetectionLazy events",
-            "(0-FFFFFFFF) Интервал между событиями IdleDetectionLazy"),
+            "(0-FFFFFFFF, 100 ns units) Interval between IdleDetectionLazy events (if DWORD is missing, default is 1000000)",
+            "(0-FFFFFFFF, 100 нс единицы) Интервал между событиями IdleDetectionLazy (если DWORD отсутствует, значение по умолчанию 1000000)"),
 
         ["Reason_LazyMode_Disabled"] = (
             "NoLazyMode = 1 disables Lazy Mode: IdleDetection and LazyModeTimeout are not used",
@@ -120,17 +120,17 @@ public sealed class LocalizationManager : INotifyPropertyChanged
             "(1-8) Priority boost for audio task threads for the Low category (Increase BackgroundPriority if your audio stutters)",
             "(1-8) Буст приоритета потоков, которые входят в\u00A0аудио задачу для Low категории (Повышайте\u00A0BackgroundPriority, если ваш звук лагает)"),
         ["Audio_PriorityWhenYielded_Help"] = (
-            "(1-19) Priority of audio task threads without MMCSS boost (Increase Priority When Yielded if your audio stutters)",
-            "(1-19) Приоритет потоков, которые входят в\u00A0аудио задачу, без\u00A0буста MMCSS (Повышайте\u00A0Priority\u00A0When\u00A0Yielded, если ваш звук лагает)"),
+            "(1-19) Non-boosted priority of the audiodg audio thread (Increase Priority When Yielded if your audio stutters)",
+            "(1-19) Приоритет аудио потока audiodg без буста MMCSS (Повышайте Priority When Yielded, если звук лагает)"),
         ["Audio_PriorityWhenYielded_Desc"] = (
-            "(1-19) Priority of audio task threads without MMCSS boost (Increase Priority When Yielded if your audio stutters)",
-            "(1-19) Приоритет потоков, которые входят в\u00A0аудио задачу, без\u00A0буста MMCSS (Повышайте\u00A0Priority\u00A0When\u00A0Yielded, если ваш звук лагает)"),
+            "(1-19) Non-boosted priority of the audiodg audio thread (Increase Priority When Yielded if your audio stutters)",
+            "(1-19) Приоритет аудио потока audiodg без буста MMCSS (Повышайте Priority When Yielded, если звук лагает)"),
         ["Reason_Priority_Low"] = (
             "Priority works only with Scheduling Category = Medium. For Low use Background Priority",
             "Priority работает только при Scheduling Category = Medium. Для Low используется Background Priority"),
         ["Reason_Priority_High"] = (
-            "With Scheduling Category = High, Priority is not used (fixed by the system)",
-            "При Scheduling Category = High значение Priority не используется (фиксируется системой)"),
+            "With Scheduling Category = High, Priority is not used (fixed by the system to 2)",
+            "При Scheduling Category = High значение Priority не используется (фиксируется системой на 2)"),
         ["Reason_Priority_Unset"] = (
             "Select Scheduling Category to use Priority",
             "Выберите Scheduling Category, чтобы использовать Priority"),
@@ -158,11 +158,11 @@ public sealed class LocalizationManager : INotifyPropertyChanged
         ["Status_AudioNoBoost"] = ("{0} (No MMCSS boost: {1})", "{0} (Без буста MMCSS: {1})"),
         ["Group_NdisSettings"] = ("NDIS Settings", "NDIS Settings"),
         ["Ndis_ReceiveWorkerThreadPriority_Help"] = (
-            "(8 or 16-31) NDIS thread priority",
-            "(8 or 16-31) приоритет потока NDIS"),
+            "(8 or 16-31) NDIS worker thread priority (9-15 do not apply to the active network worker thread; it stays at 8)",
+            "(8 или 16-31) Приоритет потока NDIS (значения 9-15 не применяются к активному network worker thread: он остается на 8)"),
         ["Ndis_ReceiveWorkerThreadPriority_Desc"] = (
-            "(8 or 16-31) NDIS thread priority",
-            "(8 or 16-31) приоритет потока NDIS"),
+            "(8 or 16-31) NDIS worker thread priority (9-15 do not apply to the active network worker thread; it stays at 8)",
+            "(8 или 16-31) Приоритет потока NDIS (значения 9-15 не применяются к активному network worker thread: он остается на 8)"),
 
         ["Reason_Ndis_NetAdapterCx"] = (
             "NetAdapterCx detected: ReceiveWorkerThreadPriority does not affect Rx/Tx threads",
