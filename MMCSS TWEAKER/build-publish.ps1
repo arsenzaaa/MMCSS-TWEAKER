@@ -10,9 +10,11 @@ param(
 $ErrorActionPreference = "Stop"
 
 $projectPath = Join-Path $PSScriptRoot "MMCSSTweaker.csproj"
-$publishRoot = Join-Path $PSScriptRoot "bin\\Publish"
-$withNetOut = Join-Path $publishRoot "self-contained"
-$withoutNetOut = Join-Path $publishRoot "framework-dependent"
+$publishRoot = Join-Path $PSScriptRoot "bin\Publish"
+$selfContainedDisplayName = "MMCSS TWEAKER (NET FRAMEWORK)"
+$frameworkDependentDisplayName = "MMCSS TWEAKER"
+$withNetOut = Join-Path $publishRoot $selfContainedDisplayName
+$withoutNetOut = Join-Path $publishRoot $frameworkDependentDisplayName
 
 if (-not (Test-Path -LiteralPath $projectPath)) {
     throw "Project file not found: $projectPath"
@@ -25,29 +27,38 @@ if (-not (Get-Command dotnet -ErrorAction SilentlyContinue)) {
 function Rename-PublishedExe {
     param(
         [string]$OutputDir,
-        [string]$FriendlyExeName
+        [string]$TargetName,
+        [string]$SourceName = "MMCSS TWEAKER.exe"
     )
 
-    $publishedExe = Get-ChildItem -LiteralPath $OutputDir -File -Filter *.exe |
-        Sort-Object Length -Descending |
-        Select-Object -First 1
+    $allExe = Get-ChildItem -LiteralPath $OutputDir -File -Filter *.exe
+
+    $publishedExe = $allExe | Where-Object { $_.Name -ieq $SourceName } | Select-Object -First 1
+    if (-not $publishedExe) {
+        $publishedExe = $allExe |
+            Where-Object { $_.Name -ine $TargetName } |
+            Sort-Object Length -Descending |
+            Select-Object -First 1
+    }
+    if (-not $publishedExe) {
+        $publishedExe = $allExe | Where-Object { $_.Name -ieq $TargetName } | Select-Object -First 1
+    }
 
     if (-not $publishedExe) {
         throw "No EXE found in publish output: $OutputDir"
     }
 
-    $targetFileName = "$FriendlyExeName.exe"
-    if ($publishedExe.Name -ieq $targetFileName) {
+    if ($publishedExe.Name -ieq $TargetName) {
         return
     }
 
-    $targetPath = Join-Path $OutputDir $targetFileName
+    $targetPath = Join-Path $OutputDir $TargetName
     if (Test-Path -LiteralPath $targetPath) {
         Remove-Item -LiteralPath $targetPath -Force
     }
 
-    Rename-Item -LiteralPath $publishedExe.FullName -NewName $targetFileName
-    Write-Host "Renamed EXE: $targetFileName"
+    Rename-Item -LiteralPath $publishedExe.FullName -NewName $TargetName
+    Write-Host "Renamed EXE: $TargetName"
 }
 
 function Invoke-PublishFlavor {
@@ -57,7 +68,7 @@ function Invoke-PublishFlavor {
         [bool]$PublishSingleFile,
         [bool]$IncludeNativeLibrariesForSelfExtract,
         [string]$OutputDir,
-        [string]$FriendlyExeName
+        [string]$TargetExeName
     )
 
     if ($Clean -and (Test-Path -LiteralPath $OutputDir)) {
@@ -93,7 +104,7 @@ function Invoke-PublishFlavor {
         throw "dotnet publish failed for flavor '$Label' (exit code $LASTEXITCODE)"
     }
 
-    Rename-PublishedExe -OutputDir $OutputDir -FriendlyExeName $FriendlyExeName
+    Rename-PublishedExe -OutputDir $OutputDir -TargetName $TargetExeName
 }
 
 Write-Host "Restoring project..."
@@ -104,18 +115,18 @@ if ($LASTEXITCODE -ne 0) {
 
 switch ($Flavor) {
     "both" {
-        Invoke-PublishFlavor -Label "with .NET (self-contained)" -SelfContained $true -PublishSingleFile $true -IncludeNativeLibrariesForSelfExtract $true -OutputDir $withNetOut -FriendlyExeName "MMCSS TWEAKER (Portable, .NET Included)"
-        Invoke-PublishFlavor -Label "without .NET (framework-dependent)" -SelfContained $false -PublishSingleFile $true -IncludeNativeLibrariesForSelfExtract $false -OutputDir $withoutNetOut -FriendlyExeName "MMCSS TWEAKER (.NET Runtime Required)"
+        Invoke-PublishFlavor -Label "self-contained (runtime included)" -SelfContained $true -PublishSingleFile $true -IncludeNativeLibrariesForSelfExtract $true -OutputDir $withNetOut -TargetExeName "$selfContainedDisplayName.exe"
+        Invoke-PublishFlavor -Label "framework-dependent (requires .NET runtime)" -SelfContained $false -PublishSingleFile $true -IncludeNativeLibrariesForSelfExtract $false -OutputDir $withoutNetOut -TargetExeName "$frameworkDependentDisplayName.exe"
     }
     "with-net" {
-        Invoke-PublishFlavor -Label "with .NET (self-contained)" -SelfContained $true -PublishSingleFile $true -IncludeNativeLibrariesForSelfExtract $true -OutputDir $withNetOut -FriendlyExeName "MMCSS TWEAKER (Portable, .NET Included)"
+        Invoke-PublishFlavor -Label "self-contained (runtime included)" -SelfContained $true -PublishSingleFile $true -IncludeNativeLibrariesForSelfExtract $true -OutputDir $withNetOut -TargetExeName "$selfContainedDisplayName.exe"
     }
     "without-net" {
-        Invoke-PublishFlavor -Label "without .NET (framework-dependent)" -SelfContained $false -PublishSingleFile $true -IncludeNativeLibrariesForSelfExtract $false -OutputDir $withoutNetOut -FriendlyExeName "MMCSS TWEAKER (.NET Runtime Required)"
+        Invoke-PublishFlavor -Label "framework-dependent (requires .NET runtime)" -SelfContained $false -PublishSingleFile $true -IncludeNativeLibrariesForSelfExtract $false -OutputDir $withoutNetOut -TargetExeName "$frameworkDependentDisplayName.exe"
     }
 }
 
 Write-Host ""
 Write-Host "Done."
-Write-Host "with .NET:    $(Join-Path $withNetOut 'MMCSS TWEAKER (Portable, .NET Included).exe')"
-Write-Host "without .NET: $(Join-Path $withoutNetOut 'MMCSS TWEAKER (.NET Runtime Required).exe')"
+Write-Host "Integrated .NET build:      $withNetOut"
+Write-Host "Requires installed .NET:    $withoutNetOut"

@@ -95,7 +95,7 @@ internal static class AutoOptimize
         var dwordSettings = new Dictionary<string, uint>
         {
             ["Priority"] = 1,
-            ["BackgroundPriority"] = 1,
+            ["BackgroundPriority"] = 3,
         };
 
         const string schedulingCategory = "Low";
@@ -142,7 +142,7 @@ internal static class AutoOptimize
         {
             WriteDword(subKey, "Priority", 1);
             WriteDword(subKey, "Priority When Yielded", 16);
-            WriteDword(subKey, "BackgroundPriority", 1);
+            WriteDword(subKey, "BackgroundPriority", 3);
             WriteString(subKey, "Scheduling Category", "Low");
             WriteString(subKey, "Latency Sensitive", "False");
         }
