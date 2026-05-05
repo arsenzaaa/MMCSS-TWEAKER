@@ -31,7 +31,7 @@ internal static class BackupRegManager
         }
 
         WriteDword(RegistryPaths.SystemProfile, "NetworkThrottlingIndex", 0x0a);
-        WriteDword(RegistryPaths.SystemProfile, "SystemResponsiveness", 0x0a);
+        WriteDword(RegistryPaths.SystemProfile, "SystemResponsiveness", 0x14);
         DeleteValue(RegistryPaths.SystemProfile, "NoLazyMode");
         DeleteValue(RegistryPaths.SystemProfile, "LazyModeTimeout");
         DeleteValue(RegistryPaths.SystemProfile, "SchedulerPeriod");

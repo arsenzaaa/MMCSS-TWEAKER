@@ -27,7 +27,7 @@ public partial class App : Application
                 return;
             }
 
-            UiDialog.Warning(null, "MMCSS-TWEAKER", loc["Msg_AdminRequired"]);
+            UiDialog.Warning(null, "MMCSS TWEAKER", loc["Msg_AdminRequired"]);
             Shutdown(1);
             return;
         }
@@ -112,7 +112,7 @@ public partial class App : Application
             string typeName = ex.GetType().FullName ?? ex.GetType().Name;
             UiDialog.Error(
                 Application.Current?.MainWindow,
-                "MMCSS-TWEAKER",
+                "MMCSS TWEAKER",
                 loc.Format("Msg_FatalError", typeName, ex.Message ?? string.Empty, logPath));
         }
         catch

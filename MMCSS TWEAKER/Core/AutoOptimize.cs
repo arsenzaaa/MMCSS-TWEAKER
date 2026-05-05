@@ -129,7 +129,7 @@ internal static class AutoOptimize
         }
 
         WriteDword(RegistryPaths.SystemProfile, "NetworkThrottlingIndex", 0xFFFFFFFF);
-        WriteDword(RegistryPaths.SystemProfile, "SystemResponsiveness", 0x14);
+        WriteDword(RegistryPaths.SystemProfile, "SystemResponsiveness", 0x0a);
         WriteDword(RegistryPaths.SystemProfile, "MaxThreadsPerProcess", 0x08);
         WriteDword(RegistryPaths.SystemProfile, "MaxThreadsTotal", 0x40);
         WriteDword(RegistryPaths.SystemProfile, "NoLazyMode", 0);

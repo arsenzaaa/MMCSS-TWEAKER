@@ -11,10 +11,9 @@ $ErrorActionPreference = "Stop"
 
 $projectPath = Join-Path $PSScriptRoot "MMCSSTweaker.csproj"
 $publishRoot = Join-Path $PSScriptRoot "bin\Publish"
-$selfContainedDisplayName = "MMCSS TWEAKER (NET FRAMEWORK)"
-$frameworkDependentDisplayName = "MMCSS TWEAKER"
-$withNetOut = Join-Path $publishRoot $selfContainedDisplayName
-$withoutNetOut = Join-Path $publishRoot $frameworkDependentDisplayName
+$workRoot = Join-Path $publishRoot "_work"
+$standaloneExeName = "MMCSS-TWEAKER-NET-RUNTIME.exe"
+$frameworkDependentExeName = "MMCSS-TWEAKER.exe"
 
 if (-not (Test-Path -LiteralPath $projectPath)) {
     throw "Project file not found: $projectPath"
@@ -24,10 +23,13 @@ if (-not (Get-Command dotnet -ErrorAction SilentlyContinue)) {
     throw "dotnet CLI is not available in PATH."
 }
 
-function Rename-PublishedExe {
+$releaseOut = $publishRoot
+$withNetOut = Join-Path $workRoot "standalone"
+$withoutNetOut = Join-Path $workRoot "framework-dependent"
+
+function Get-PublishedExe {
     param(
         [string]$OutputDir,
-        [string]$TargetName,
         [string]$SourceName = "MMCSS TWEAKER.exe"
     )
 
@@ -36,29 +38,15 @@ function Rename-PublishedExe {
     $publishedExe = $allExe | Where-Object { $_.Name -ieq $SourceName } | Select-Object -First 1
     if (-not $publishedExe) {
         $publishedExe = $allExe |
-            Where-Object { $_.Name -ine $TargetName } |
             Sort-Object Length -Descending |
             Select-Object -First 1
-    }
-    if (-not $publishedExe) {
-        $publishedExe = $allExe | Where-Object { $_.Name -ieq $TargetName } | Select-Object -First 1
     }
 
     if (-not $publishedExe) {
         throw "No EXE found in publish output: $OutputDir"
     }
 
-    if ($publishedExe.Name -ieq $TargetName) {
-        return
-    }
-
-    $targetPath = Join-Path $OutputDir $TargetName
-    if (Test-Path -LiteralPath $targetPath) {
-        Remove-Item -LiteralPath $targetPath -Force
-    }
-
-    Rename-Item -LiteralPath $publishedExe.FullName -NewName $TargetName
-    Write-Host "Renamed EXE: $TargetName"
+    return $publishedExe
 }
 
 function Invoke-PublishFlavor {
@@ -79,7 +67,7 @@ function Invoke-PublishFlavor {
 
     Write-Host ""
     Write-Host "=== Publishing: $Label ==="
-    Write-Host "Output: $OutputDir"
+    Write-Host "Temporary output: $OutputDir"
 
     $selfContainedText = $SelfContained.ToString().ToLowerInvariant()
     $singleFileText = $PublishSingleFile.ToString().ToLowerInvariant()
@@ -95,6 +83,7 @@ function Invoke-PublishFlavor {
         -p:IncludeNativeLibrariesForSelfExtract=$nativeExtractText `
         -p:IncludeAllContentForSelfExtract=$allContentExtractText `
         -p:EnableCompressionInSingleFile=$compressionText `
+        -p:PublishTrimmed=false `
         -p:DebugType=None `
         -p:DebugSymbols=false `
         -p:UseAppHost=true `
@@ -104,8 +93,26 @@ function Invoke-PublishFlavor {
         throw "dotnet publish failed for flavor '$Label' (exit code $LASTEXITCODE)"
     }
 
-    Rename-PublishedExe -OutputDir $OutputDir -TargetName $TargetExeName
+    $publishedExe = Get-PublishedExe -OutputDir $OutputDir
+    $targetPath = Join-Path $releaseOut $TargetExeName
+
+    if (Test-Path -LiteralPath $targetPath) {
+        Remove-Item -LiteralPath $targetPath -Force
+    }
+
+    Copy-Item -LiteralPath $publishedExe.FullName -Destination $targetPath -Force
+    Write-Host "Release asset: $TargetExeName"
 }
+
+if ($Clean) {
+    foreach ($path in @($releaseOut, $workRoot)) {
+        if (Test-Path -LiteralPath $path) {
+            Remove-Item -LiteralPath $path -Recurse -Force
+        }
+    }
+}
+
+New-Item -ItemType Directory -Path $releaseOut -Force | Out-Null
 
 Write-Host "Restoring project..."
 dotnet restore $projectPath
@@ -115,18 +122,26 @@ if ($LASTEXITCODE -ne 0) {
 
 switch ($Flavor) {
     "both" {
-        Invoke-PublishFlavor -Label "self-contained (runtime included)" -SelfContained $true -PublishSingleFile $true -IncludeNativeLibrariesForSelfExtract $true -OutputDir $withNetOut -TargetExeName "$selfContainedDisplayName.exe"
-        Invoke-PublishFlavor -Label "framework-dependent (requires .NET runtime)" -SelfContained $false -PublishSingleFile $true -IncludeNativeLibrariesForSelfExtract $false -OutputDir $withoutNetOut -TargetExeName "$frameworkDependentDisplayName.exe"
+        Invoke-PublishFlavor -Label "standalone (with .NET runtime)" -SelfContained $true -PublishSingleFile $true -IncludeNativeLibrariesForSelfExtract $true -OutputDir $withNetOut -TargetExeName $standaloneExeName
+        Invoke-PublishFlavor -Label "framework-dependent (requires installed .NET runtime)" -SelfContained $false -PublishSingleFile $true -IncludeNativeLibrariesForSelfExtract $false -OutputDir $withoutNetOut -TargetExeName $frameworkDependentExeName
     }
     "with-net" {
-        Invoke-PublishFlavor -Label "self-contained (runtime included)" -SelfContained $true -PublishSingleFile $true -IncludeNativeLibrariesForSelfExtract $true -OutputDir $withNetOut -TargetExeName "$selfContainedDisplayName.exe"
+        Invoke-PublishFlavor -Label "standalone (with .NET runtime)" -SelfContained $true -PublishSingleFile $true -IncludeNativeLibrariesForSelfExtract $true -OutputDir $withNetOut -TargetExeName $standaloneExeName
     }
     "without-net" {
-        Invoke-PublishFlavor -Label "framework-dependent (requires .NET runtime)" -SelfContained $false -PublishSingleFile $true -IncludeNativeLibrariesForSelfExtract $false -OutputDir $withoutNetOut -TargetExeName "$frameworkDependentDisplayName.exe"
+        Invoke-PublishFlavor -Label "framework-dependent (requires installed .NET runtime)" -SelfContained $false -PublishSingleFile $true -IncludeNativeLibrariesForSelfExtract $false -OutputDir $withoutNetOut -TargetExeName $frameworkDependentExeName
     }
+}
+
+if (Test-Path -LiteralPath $workRoot) {
+    Remove-Item -LiteralPath $workRoot -Recurse -Force
 }
 
 Write-Host ""
 Write-Host "Done."
-Write-Host "Integrated .NET build:      $withNetOut"
-Write-Host "Requires installed .NET:    $withoutNetOut"
+Write-Host "Release files: $releaseOut"
+Get-ChildItem -LiteralPath $releaseOut -File -Filter *.exe |
+    Sort-Object Name |
+    ForEach-Object {
+        Write-Host ("  {0} ({1:N2} MB)" -f $_.Name, ($_.Length / 1MB))
+    }
